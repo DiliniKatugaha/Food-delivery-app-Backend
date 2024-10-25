@@ -3,8 +3,6 @@ const controller = require('../controllers/signupController');
 const router = express.Router();
 
 router.route('/RestaurantData').post(controller.signupResDetails)
-// router.route('/CustomerData').post(controller.customerDetails)
-// router.route('/signindata').post(controller.signinDetails)
-
+router.route('/updateProfile').post(controller.updateResDetails)
 
 module.exports= router;
