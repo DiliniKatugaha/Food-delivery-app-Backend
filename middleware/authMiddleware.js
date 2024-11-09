@@ -12,12 +12,12 @@ const protect = (req, res, next) => {
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) {
-            console.log("Token verification error:", err); // Log the exact error
+            console.log("Token verification error:", err); 
             return res.status(401).json({ message: 'Invalid token' });
         }
         
-        console.log("Decoded Token:", decoded); // Ensure restaurantId or other fields are included
-        req.user = decoded; // Attach decoded token payload to request (contains restaurantId or other user info)
+        console.log("Decoded Token:", decoded);
+        req.user = decoded; 
         next();
     });
 };

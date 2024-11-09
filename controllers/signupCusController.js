@@ -2,19 +2,17 @@ const signupCusModel = require('../models/signupCusModel');
 const signupCus = new signupCusModel.Signup();
 const jwt = require('jsonwebtoken');
 
-// Middleware for token verification
 const verifyToken = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ message: 'Token is missing' });
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) return res.status(403).json({ message: 'Failed to authenticate token' });
-        req.customerId = decoded.cus_id; // Store customer ID in the request for use in routes
+        req.customerId = decoded.cus_id; 
         next();
     });
 };
 
-// POST route to sign up new customers
 exports.signupCusDetails = async (req, res) => {
     try {
         const newCustomer = await signupCus.signupCusDetails(req.body);
@@ -25,7 +23,6 @@ exports.signupCusDetails = async (req, res) => {
     }
 };
 
-// GET route to fetch customer profile data
 exports.getCustomerData = [verifyToken, async (req, res) => {
     try {
         const customer = await signupCus.getCustomerById(req.customerId);
@@ -37,7 +34,6 @@ exports.getCustomerData = [verifyToken, async (req, res) => {
     }
 }];
 
-// PUT route to update customer profile data
 exports.updateCustomerData = [verifyToken, async (req, res) => {
     try {
         const updatedCustomer = await signupCus.updateCustomer(req.customerId, req.body);

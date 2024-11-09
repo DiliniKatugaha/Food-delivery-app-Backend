@@ -1,15 +1,13 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config(); // Load environment variables
+require('dotenv').config(); 
 
-// Create a new Sequelize instance using environment variables
 const sequelize = new Sequelize(process.env.DATABASE, process.env.USER, process.env.PASSWORD, {
     host: process.env.HOST || 'localhost',
-    dialect: 'mysql', // MySQL is being used
-    port: process.env.DBPORT || 3306, // Default MySQL port
-    logging: false, // Disable logging, or set to console.log if you want to debug queries
+    dialect: 'mysql', 
+    port: process.env.DBPORT || 3306, 
+    logging: false, 
 });
 
-// Test the connection to the MySQL database
 sequelize
     .authenticate()
     .then(() => {

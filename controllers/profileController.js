@@ -1,37 +1,32 @@
-// profileController.js
-
 const jwt = require('jsonwebtoken');
-const profileModel = require('../models/profileModel'); // Ensure this points to your profile model
-const JWT_SECRET = 'your_jwt_secret_key'; // Replace with your actual secret
+const profileModel = require('../models/profileModel');
+const JWT_SECRET = 'your_jwt_secret_key'; 
 
-// Get customer data
 exports.getCustomerData = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1]; // Get token from headers
+    const token = req.headers.authorization.split(' ')[1]; 
     if (!token) {
         return res.status(403).json({ message: 'Access denied, no token provided' });
     }
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const email = decoded.email; // Get email from the token
+        const email = decoded.email; 
         
-        // Fetch user details from the model
         const userDetails = await profileModel.getCustomerDetails(email);
 
         if (!userDetails) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json(userDetails); // Return the user's details
+        res.status(200).json(userDetails); 
     } catch (error) {
         console.error('Error fetching customer data:', error);
         res.status(500).json({ message: 'An error occurred while fetching data' });
     }
 };
 
-// Update customer data
 exports.updateCustomerData = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1]; // Get token from headers
+    const token = req.headers.authorization.split(' ')[1]; 
     if (!token) {
         return res.status(403).json({ message: 'Access denied, no token provided' });
     }
@@ -40,9 +35,8 @@ exports.updateCustomerData = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const currentEmail = decoded.email; // Get email from the token
+        const currentEmail = decoded.email; 
 
-        // Update user details using the model
         const updatedUser = await profileModel.updateCustomerDetails(name, email, status, contact, hostel, address, currentEmail);
 
         if (!updatedUser) {

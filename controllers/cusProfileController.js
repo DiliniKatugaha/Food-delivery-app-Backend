@@ -1,6 +1,5 @@
 const cusProfileModel = require('../models/cusProfileModel');
 
-// Get customer profile
 exports.getCustomerProfile = async (req, res) => {
     try {
         const customerId = req.user.customerId;
@@ -20,19 +19,15 @@ exports.getCustomerProfile = async (req, res) => {
     }
 };
 
-// Update customer profile
-// Update customer profile
-// Update customer profile
-// Update customer profile
 exports.updateCustomerProfile = async (req, res) => {
-    const { username, email, status, contact, hostel, address } = req.body; // Use username here
+    const { username, email, status, contact, hostel, address } = req.body;
 
     if (!username || !email || !contact) {
         return res.status(400).json({ message: 'Customer name, email, and contact number are required' });
     }
 
     try {
-        const customerId = req.user.customerId; // Use customerId from decoded token
+        const customerId = req.user.customerId;
         if (!customerId) {
             return res.status(401).json({ message: 'Unauthorized: Invalid customer ID' });
         }
@@ -45,7 +40,6 @@ exports.updateCustomerProfile = async (req, res) => {
             return res.status(404).json({ message: 'Customer not found or no changes made' });
         }
 
-        // Log the updated customer
         console.log('Updated Customer:', updatedCustomer);
 
         res.status(200).json({ message: 'Profile updated successfully', updatedCustomer });

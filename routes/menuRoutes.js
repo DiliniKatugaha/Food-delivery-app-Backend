@@ -1,15 +1,12 @@
 const express = require('express');
-const { createMenu, getMenu, updateMenu,getMenuById } = require('../controllers/menuController');
-const { protect } = require('../middleware/authMiddleware'); // Import your auth middleware
+const { createMenu, getMenu, updateMenu,getMenuById, getMenuItemsByRestaurantId} = require('../controllers/menuController');
+const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Route to create a new menu
-router.route('/menu').post(protect, createMenu); // Apply the protect middleware here
-
-// Route to get menu by restaurant ID
-router.route('/menu').get(protect, getMenu); // Also apply to getMenu if it needs authentication
+router.route('/menu').post(protect, createMenu); 
+router.route('/menu').get(protect, getMenu); 
 router.route('/menu/:restaurantId').get(protect, getMenuById);
-
 router.route('/menu/:id').put(protect, updateMenu);
+router.get('/menus/:id', getMenuItemsByRestaurantId);
 
 module.exports = router;

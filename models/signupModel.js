@@ -6,7 +6,7 @@ const sequelize = require('../config/database');
 
 
 const Restaurateur = sequelize.define('restaurateur', {
-    res_id: {  // Primary key
+    res_id: { 
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -15,7 +15,7 @@ const Restaurateur = sequelize.define('restaurateur', {
         type: DataTypes.STRING(20),
         allowNull: false,
     },
-    ownername: {  // Correct the field name to match the database ('ownername')
+    ownername: {  
         type: DataTypes.STRING(50),
         allowNull: false,
     },
@@ -49,12 +49,12 @@ const Restaurateur = sequelize.define('restaurateur', {
         allowNull: true,
     },
     logo: {
-        type: DataTypes.BLOB('long'),  // Correct type for logo storage
+        type: DataTypes.BLOB('long'), 
         allowNull: true,
     },
 }, {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
-    tableName: 'Restaurateur', // Specify the table name to match the database
+    timestamps: true, 
+    tableName: 'Restaurateur', 
 });
 
 
@@ -64,20 +64,17 @@ class Signup {
         if (!validator.isEmail(details.email)) throw new Error('Email is not valid!');
         if (!validator.isStrongPassword(details.password)) throw new Error('Password is not strong enough!');
 
-        // Check for existing email
         const existingUser = await User.findOne({ where: { email: details.email } });
         if (existingUser) throw new Error('Email already signed up!');
 
         const hash = await bcrypt.hash(details.password, 10);
 
-        // Create new user
-// Assuming you are using the User model to create users
 const newUser = await User.create({
     username: details.username,
     email: details.email,
     password: hash,
     role: 'Restaurateur',
-    restaurantId: details.restaurantId, // Make sure to provide the correct restaurantId
+    restaurantId: details.restaurantId, 
 });
 
         await Restaurateur.create({
@@ -98,30 +95,25 @@ const newUser = await User.create({
 
 class Update {
     async updateResDetails(details, logoFile) {
-        // Validate input details
         if (!validator.isEmail(details.email)) throw new Error('Email is not valid!');
         if (!details.username || !details.ownername || !details.contact) {
             throw new Error('All fields are required!');
         }
 
-        // Check if a restaurant with the given email exists
         const existingUser = await User.findOne({ where: { email: details.email } });
         if (!existingUser) {
             throw new Error('Restaurant with the given email does not exist!');
         }
 
-        // Prepare the update query
         let sql = `UPDATE restaurateur SET username = ?, ownername = ?, contact = ? WHERE email = ?`;
         const params = [details.username, details.ownername, details.contact, details.email];
 
-        // Update the logo if it was provided
         if (logoFile) {
-            const logoData = fs.readFileSync(logoFile.path); // Read the image file as binary data
+            const logoData = fs.readFileSync(logoFile.path); 
             sql = `UPDATE restaurateur SET username = ?, ownername = ?, contact = ?, logo = ? WHERE email = ?`;
-            params.splice(3, 0, logoData); // Insert logo data before the email parameter
+            params.splice(3, 0, logoData); 
         }
 
-        // Execute the update query
         await db.execute(sql, params)
             .then((data) => {
                 console.log('Profile updated successfully:', data[0]);

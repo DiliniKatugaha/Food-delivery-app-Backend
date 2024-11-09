@@ -3,7 +3,6 @@ const cors = require('cors');
 require('dotenv').config();
 const sequelize = require('./config/database');
 
-// routes import
 const signupRouter = require('./routes/signupRoutes');
 const signupCusRouter = require('./routes/signupCusRoutes');
 const orderRouter = require('./routes/orderRoutes');
@@ -15,17 +14,14 @@ const cusProfileRouter = require('./routes/cusProfileRouter');
 
 const app = express();
 
-// Enable CORS (Allow multiple origins for dev)
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://192.168.8.100'], // Adjust origins as needed
+  origin: ['http://localhost:3000', 'http://192.168.8.100'],
   optionsSuccessStatus: 200
 }));
 
-// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Use your routes
 app.use('/user/restaurant', signupRouter);
 app.use('/user', signInRouter);
 app.use('/user/customer', signupCusRouter);
@@ -35,14 +31,12 @@ app.use('/restaurant', resProfileRouter);
 app.use('/items', menuRouter);
 app.use('/customer', cusProfileRouter);
 
-// Database connection and server start
 sequelize.authenticate()
   .then(() => {
     console.log('Database connected...');
-    return sequelize.sync(); // Sync all models
+    return sequelize.sync(); 
   })
   .then(() => {
-    // Start server only if DB connection is successful
     app.listen(process.env.PORT || 5000, '0.0.0.0', () => {
       console.log(`Server listening on port: ${process.env.PORT || 5000}`);
     });
@@ -51,7 +45,6 @@ sequelize.authenticate()
     console.error('Error connecting to the database:', error);
   });
 
-// Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   const response = {
@@ -66,7 +59,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json(response);
 });
 
-// Graceful shutdown for SIGINT (Ctrl+C)
 process.on('SIGINT', () => {
   console.log('Gracefully shutting down');
   sequelize.close()

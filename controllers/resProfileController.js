@@ -1,9 +1,8 @@
 const resProfileModel = require('../models/resProfileModel');
 
-// Get restaurant profile
 exports.getRestaurantProfile = async (req, res) => {
     try {
-        const restaurantId = req.user.restaurantId; // Use restaurantId from decoded token
+        const restaurantId = req.user.restaurantId; 
         if (!restaurantId) {
             return res.status(400).json({ message: 'Invalid restaurant ID' });
         }
@@ -21,7 +20,6 @@ exports.getRestaurantProfile = async (req, res) => {
     }
 };
 
-// Update restaurant profile
 exports.updateRestaurantProfile = async (req, res) => {
     const { restaurantName, ownerName, contactNumber, openHours, deliveryPlaces, address, email } = req.body;
 
@@ -30,14 +28,14 @@ exports.updateRestaurantProfile = async (req, res) => {
     }
 
     try {
-        const restaurantId = req.user.restaurantId; // Use restaurantId from decoded token
+        const restaurantId = req.user.restaurantId; 
         if (!restaurantId) {
             return res.status(400).json({ message: 'Invalid restaurant ID' });
         }
 
         let logoPath = null;
         if (req.file) {
-            logoPath = req.file.path; // Path of the uploaded logo
+            logoPath = req.file.path;
         }
 
         const updatedRestaurant = await resProfileModel.updateRestaurantDetails(

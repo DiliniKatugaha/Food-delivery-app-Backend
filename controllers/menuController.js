@@ -1,11 +1,10 @@
 const Menu = require('../models/menuModel');
 const Category = require('../models/categoryModel');
 
-// Create a new menu item
 exports.createMenu = async (req, res) => {
-    const restaurantId = req.user.restaurantId; // Ensure req.user is set correctly
-    console.log('Request user:', req.user); // Log the user info
-    console.log('Request body:', req.body); // Log the request body
+    const restaurantId = req.user.restaurantId; 
+    console.log('Request user:', req.user); 
+    console.log('Request body:', req.body); 
 
     if (!restaurantId) {
         return res.status(400).json({ message: 'Restaurant ID is required' });
@@ -14,33 +13,29 @@ exports.createMenu = async (req, res) => {
     try {
         const menuData = {
             name: req.body.name,
-            image: req.body.image, // Handle image upload appropriately
+            image: req.body.image,
             details: req.body.details,
             deliveryFee: req.body.deliveryFee,
-            restaurantId: restaurantId // Set the restaurant ID
+            restaurantId: restaurantId 
         };
 
-        // Validation checks
         if (!menuData.name || !menuData.details || !menuData.deliveryFee) {
             return res.status(400).json({ message: 'Name, details, and delivery fee are required' });
         }
 
-        // Create the menu in the database
         const newMenu = await Menu.create(menuData);
 
-        // Handle categories creation if provided
         const categories = req.body.categories || [];
         const categoryPromises = categories.map(category => {
             return Category.create({
                 name: category.name,
                 price: category.price,
-                menuId: newMenu.id // Assuming there's a menuId foreign key in your Category model
+                menuId: newMenu.id 
             });
         });
 
-        await Promise.all(categoryPromises); // Wait for all categories to be created
+        await Promise.all(categoryPromises); 
 
-        // Return a success response
         res.status(201).json({
             message: 'Menu created successfully',
             menu: newMenu,
@@ -52,14 +47,13 @@ exports.createMenu = async (req, res) => {
     }
 };
 
-// Retrieve all menus for the restaurant
 exports.getMenu = async (req, res) => {
     const restaurantId = req.user.restaurantId;
 
     try {
         const menus = await Menu.findAll({
             where: { restaurantId },
-            include: [{ model: Category, as: 'categories' }] // Include the categories in the response
+            include: [{ model: Category, as: 'categories' }] 
         });
 
         if (!menus.length) {
@@ -72,10 +66,10 @@ exports.getMenu = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-// Update a menu item along with its categories
+
 exports.updateMenu = async (req, res) => {
     const restaurantId = req.user.restaurantId;
-    const { id } = req.params; // Get menu ID from request parameters
+    const { id } = req.params;
 
     if (!restaurantId) {
         return res.status(400).json({ message: 'Restaurant ID is required' });
@@ -90,15 +84,13 @@ exports.updateMenu = async (req, res) => {
             restaurantId: restaurantId,
         };
 
-        // Update the menu
         const menu = await Menu.findOne({ where: { id, restaurantId } });
         if (!menu) {
             return res.status(404).json({ message: 'Menu not found' });
         }
 
-        await menu.update(menuData); // Update the menu details
+        await menu.update(menuData); 
 
-        // Update categories - delete old categories and create new ones
         await Category.destroy({ where: { menuId: id } });
 
         const categories = req.body.categories || [];
@@ -110,7 +102,7 @@ exports.updateMenu = async (req, res) => {
             });
         });
 
-        await Promise.all(categoryPromises); // Wait for all categories to be updated
+        await Promise.all(categoryPromises); 
 
         res.status(200).json({ message: 'Menu updated successfully' });
     } catch (error) {
@@ -119,17 +111,16 @@ exports.updateMenu = async (req, res) => {
     }
 };
 
-// Get a single menu item by its ID along with categories
 exports.getMenuById = async (req, res) => {
-    const { id } = req.params; // Get the menu ID from request parameters
+    const { id } = req.params; 
     const restaurantId = req.user.restaurantId;
 
     try {
         const menu = await Menu.findOne({
             where: { id, restaurantId },
             include: [{
-                model: Category, // Include the Category model
-                as: 'categories' // Use the alias you defined in associations
+                model: Category, 
+                as: 'categories' 
             }]
         });
 
@@ -143,3 +134,29 @@ exports.getMenuById = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+exports.getMenuItemsByRestaurantId = async (req, res) => {
+    try {
+      const restaurantId = req.params.id;
+  
+      const menus = await Menu.findAll({
+        where: { restaurantId: restaurantId },
+        include: [
+          {
+            model: Category,
+            as: 'categories', 
+            attributes: ['id', 'name', 'price'], 
+          }
+        ]
+      });
+  
+      if (menus.length === 0) {
+        return res.status(404).json({ message: 'Menu data not found for this restaurant.' });
+      }
+  
+      res.json(menus);
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
+      res.status(500).json({ error: 'An error occurred while fetching menu items.' });
+    }
+  };

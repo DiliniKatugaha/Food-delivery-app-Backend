@@ -1,13 +1,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Define the Customer model for the customer table
 const Customer = sequelize.define('customer', {
     cus_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,  // Add this if you want cus_id to auto-increment
+        autoIncrement: true, 
     },
         username: {
         type: DataTypes.STRING,
@@ -44,14 +43,12 @@ const Customer = sequelize.define('customer', {
 
 });
 
-// Fetch customer details by customerId (cus_id)
 async function getCustomerDetailsByCustomerId(customerId) {
     try {
         const customer = await Customer.findOne({ 
             where: { cus_id: customerId }, 
             attributes: ['cus_id', 'username', 'email', 'status', 'contact', 'hostel', 'address']
         });
-    // return customer;
     console.log(customer);
         return customer ? customer : null;
     } catch (error) {
@@ -60,9 +57,6 @@ async function getCustomerDetailsByCustomerId(customerId) {
     }
 }
 
-// Update customer details
-// Update customer details with `returning: true`
-// Update customer details
 async function updateCustomerDetails(customerId, customerName, email, status, contact, hostel, address) {
     try {
         const [updatedRows] = await Customer.update({
@@ -73,17 +67,15 @@ async function updateCustomerDetails(customerId, customerName, email, status, co
             hostel: hostel,
             address: address,
         }, {
-            where: { cus_id: customerId }  // Ensure you're updating the correct row by cus_id
+            where: { cus_id: customerId } 
         });
 
         if (updatedRows === 0) {
-            // No rows were updated
-            return null; // or throw an error based on your preference
+            return null;
         }
 
-        // Fetch the updated customer to return it
         const updatedCustomer = await Customer.findByPk(customerId);
-        return updatedCustomer; // Return the updated customer details
+        return updatedCustomer; 
     } catch (error) {
         console.error('Error updating customer details:', error);
         throw new Error('An error occurred while updating customer details: ' + error.message);

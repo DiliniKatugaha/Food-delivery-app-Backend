@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Import the Sequelize instance
+const sequelize = require('../config/database'); 
 
-// Define the User model
 const User = sequelize.define('users', {
     id: {
         type: DataTypes.INTEGER,
@@ -26,29 +25,27 @@ const User = sequelize.define('users', {
         allowNull: false,
     },
     restaurantId: {
-        type: DataTypes.INTEGER, // This should match the type used in your database
-        allowNull: true, // It can be null for users that are not restaurateurs
+        type: DataTypes.INTEGER, 
+        allowNull: true, 
     },
     customerId: {
-        type: DataTypes.INTEGER, // This should match the type used in your database
-        allowNull: true, // It can be null for users that are not restaurateurs
+        type: DataTypes.INTEGER, 
+        allowNull: true, 
     },
 }, {
-    timestamps: true, // This enables `createdAt` and `updatedAt`
+    timestamps: true, 
 });
 
 
-// Sync the model with the database
 async function syncUserModel() {
     try {
-        await User.sync(); // Use await for better error handling
+        await User.sync(); 
         console.log('User table created or already exists');
     } catch (error) {
         console.error('Error creating User table:', error);
     }
 }
 
-// Call the sync function
 syncUserModel();
 
 module.exports = User;

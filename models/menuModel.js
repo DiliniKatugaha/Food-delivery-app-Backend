@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Define the Menu model
+
 const Menu = sequelize.define('Menu', {
     id: {
         type: DataTypes.INTEGER,
@@ -14,7 +14,7 @@ const Menu = sequelize.define('Menu', {
         allowNull: false,
     },
     image: {
-        type: DataTypes.STRING, // Assuming you save the image URL or path
+        type: DataTypes.STRING, 
         allowNull: true,
     },
     details: {

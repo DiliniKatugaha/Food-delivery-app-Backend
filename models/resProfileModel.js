@@ -1,9 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Define the Restaurateur model for the restaurant table
 const Restaurateur = sequelize.define('restaurateur', {
-    res_id: {  // Primary key
+    res_id: { 
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -12,7 +11,7 @@ const Restaurateur = sequelize.define('restaurateur', {
         type: DataTypes.STRING(20),
         allowNull: false,
     },
-    ownername: {  // Correct the field name to match the database ('ownername')
+    ownername: {  
         type: DataTypes.STRING(50),
         allowNull: false,
     },
@@ -46,20 +45,18 @@ const Restaurateur = sequelize.define('restaurateur', {
         allowNull: false,
     },
     logo: {
-        type: DataTypes.BLOB('long'),  // Correct type for logo storage
-        allowNull: true,
+        type: DataTypes.BLOB('long'), 
     },
 }, {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
-    tableName: 'Restaurateur', // Specify the table name to match the database
+    timestamps: true, 
+    tableName: 'Restaurateur', 
 });
 
-// Fetch restaurant details by restaurantId (res_id)
 async function getRestaurantDetailsByRestaurantId(restaurantId) {
     try {
         const restaurant = await Restaurateur.findOne({
-            where: { res_id: restaurantId },  // Use res_id as the primary key
-            attributes: [ // Specify only the fields needed for profile retrieval
+            where: { res_id: restaurantId }, 
+            attributes: [
                 'res_id', 'username', 'ownername', 'email', 'contact', 'type',
                 'openHours', 'deliveryPlaces', 'address', 'logo', 'createdAt', 'updatedAt'
             ]
@@ -71,20 +68,19 @@ async function getRestaurantDetailsByRestaurantId(restaurantId) {
     }
 }
 
-// Update restaurant details
 async function updateRestaurantDetails(restaurantId, restaurantName, ownerName, contactNumber, openHours, deliveryPlaces, address, email, logoPath) {
     try {
         const [updatedRows] = await Restaurateur.update({
             username: restaurantName,
-            ownername: ownerName,  // Ensure this matches the DB column
+            ownername: ownerName,  
             contact: contactNumber,
             openHours,
             deliveryPlaces,
             address,
             email,
-            logo: logoPath  // Update the logo if necessary
+            logo: logoPath  
         }, {
-            where: { res_id: restaurantId }  // Ensure you're updating the correct row by res_id
+            where: { res_id: restaurantId }  
         });
 
         return updatedRows > 0;

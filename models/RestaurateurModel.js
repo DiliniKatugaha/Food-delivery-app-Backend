@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Ensure this path is correct
+const sequelize = require('../config/database');
 
-// Define the Restaurateur model
 const Restaurateur = sequelize.define('restaurateur', {
     res_id: {
         type: DataTypes.INTEGER,
@@ -37,29 +36,27 @@ const Restaurateur = sequelize.define('restaurateur', {
         allowNull: false,
     },
     logo: {
-        type: DataTypes.BLOB('long'), // Store logo as a BLOB
+        type: DataTypes.BLOB('long'), 
         allowNull: true,
     },
 }, {
-    timestamps: true, // Add createdAt and updatedAt fields
-    tableName: 'restaurateur', // Specify the table name in the database
+    timestamps: true,
+    tableName: 'restaurateur', 
 });
 
-// Static method to get all restaurateurs
 Restaurateur.getDetails = async () => {
     try {
         const restaurateurs = await Restaurateur.findAll({
             attributes: ['res_id', 'username', 'ownername', 'email', 'contact', 'type', 'openHours', 'deliveryPlaces', 'logo'], // Specify the fields to fetch
         });
 
-        // Convert the BLOB to a base64-encoded string for each restaurateur
         return restaurateurs.map(restaurant => {
-            const restaurantData = restaurant.get({ plain: true }); // Get plain object representation
+            const restaurantData = restaurant.get({ plain: true }); 
             if (restaurantData.logo) {
                 const logoBase64 = restaurantData.logo.toString('base64');
                 return {
                     ...restaurantData,
-                    logo: `data:image/png;base64,${logoBase64}` // Make sure to use appropriate MIME type for the image
+                    logo: `data:image/png;base64,${logoBase64}` 
                 };
             }
             return restaurantData;
@@ -70,5 +67,4 @@ Restaurateur.getDetails = async () => {
     }
 };
 
-// Export the model
 module.exports = { Restaurateur };

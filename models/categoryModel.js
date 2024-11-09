@@ -1,9 +1,7 @@
-// models/categoryModel.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Menu = require('./menuModel'); // Make sure to import Menu
+const Menu = require('./menuModel');
 
-// Define the Category model
 const Category = sequelize.define('Category', {
     id: {
         type: DataTypes.INTEGER,
@@ -26,7 +24,6 @@ const Category = sequelize.define('Category', {
     timestamps: true,
 });
 
-// Set up the association between Category and Menu
 Category.belongsTo(Menu, { foreignKey: 'menuId' });
 Menu.hasMany(Category, { foreignKey: 'menuId', as: 'categories' });
 
